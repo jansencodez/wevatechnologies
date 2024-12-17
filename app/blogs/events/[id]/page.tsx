@@ -3,7 +3,6 @@
 import { usePathname } from "next/navigation";
 import { useEvents } from "@/context/EventContext"; // Importing the EventContext
 import { useEffect, useState } from "react";
-import { ReactNode } from "react";
 
 import Loader from "@/components/Loader";
 import { Carousel } from "react-responsive-carousel"; // For image carousel
