@@ -13,7 +13,7 @@ import {
   LineElement,
   PointElement,
 } from "chart.js";
-import { Bar, Chart } from "react-chartjs-2";
+import { Chart } from "react-chartjs-2";
 import ResponsiveChartWrapper from "../components/ResponsiveChartWrapper";
 import {
   cardStyle,

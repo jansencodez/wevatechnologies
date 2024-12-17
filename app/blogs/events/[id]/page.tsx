@@ -3,18 +3,29 @@
 import { usePathname } from "next/navigation";
 import { useEvents } from "@/context/EventContext"; // Importing the EventContext
 import { useEffect, useState } from "react";
-import dynamic from "next/dynamic";
+import { ReactNode } from "react";
 
 import Loader from "@/components/Loader";
 import { Carousel } from "react-responsive-carousel"; // For image carousel
 import "react-responsive-carousel/lib/styles/carousel.min.css";
 import { slugify } from "@/app/utils/slugify";
+import Image from "next/image";
+
+interface Event {
+  tags: string[];
+  images: string[];
+  event_description: string;
+  event_location: string;
+  event_date: string | number | Date;
+  event_name: string;
+  id: number;
+}
 
 const EventDetailPage = () => {
   const pathname = usePathname();
   const eventSlug = pathname.split("/").pop(); // Extract the slug from the URL
   const { events, isLoading, error } = useEvents();
-  const [event, setEvent] = useState<any | null>(null);
+  const [event, setEvent] = useState<Event | null>(null);
 
   // Find the matching event based on the slug
   useEffect(() => {
@@ -24,7 +35,7 @@ const EventDetailPage = () => {
       (event) => slugify(event.event_name) === eventSlug
     );
 
-    setEvent(matchedEvent || null);
+    setEvent(matchedEvent as unknown as Event | null);
   }, [eventSlug, events]);
 
   if (isLoading) {
@@ -70,12 +81,14 @@ const EventDetailPage = () => {
           </p>
 
           {/* Display images associated with the event in a carousel */}
-          {event.images.length > 0 && (
+          {event.images && event.images.length > 0 && (
             <div className="mt-6">
               <Carousel showThumbs={false} infiniteLoop>
-                {event.images.map((image: string, index: number) => (
+                {event.images.map((image, index) => (
                   <div key={index}>
-                    <img
+                    <Image
+                      width={400}
+                      height={200}
                       src={image}
                       alt={`Event Image ${index + 1}`}
                       className="w-full max-w-3xl mx-auto h-auto rounded-lg"
@@ -92,7 +105,7 @@ const EventDetailPage = () => {
               <div className="text-sm text-gray-600">
                 <strong>Tags:</strong>
                 <ul className="flex space-x-2">
-                  {event.tags.map((tag: string, index: number) => (
+                  {event.tags.map((tag, index) => (
                     <li
                       key={index}
                       className="bg-gray-200 px-3 py-1 rounded-full"
