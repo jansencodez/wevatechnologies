@@ -41,9 +41,6 @@ const RootLayout = ({ children }: { children: React.ReactNode }) => {
   return (
     <html lang="en">
       <head>
-        <title>Weva Technologies</title>
-        <link rel="canonical" href="https://wevatechnologies.vercel.app" />
-
         {/* No need to manually add meta tags, metadata will be applied automatically */}
       </head>
       <body>
