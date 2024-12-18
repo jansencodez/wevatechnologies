@@ -2,7 +2,7 @@
 
 import React, { createContext, useContext, useState, ReactNode } from "react";
 
-interface Service {
+export interface Service {
   title: string;
   description: string;
   imageUrl: string;

@@ -23,7 +23,7 @@ function Footer() {
 
   return (
     <footer className="bg-gray-800 text-gray-300 py-6 bottom-0 w-full h-fit">
-      <div className="container mx-auto text-center flex flex-col">
+      <div className="container mx-auto text-center flex flex-col px-4">
         {/* Logo Section */}
         <div className="flex justify-center items-center mb-4 bg-white max-w-fit self-center p-4 rounded-3xl">
           <Image
@@ -41,7 +41,7 @@ function Footer() {
 
         {/* Footer Navigation */}
         <nav className="mt-4">
-          <ul className="flex justify-center space-x-6">
+          <ul className="flex flex-wrap justify-center space-x-6 gap-4">
             <li>
               <Link href="/privacy" className="hover:text-white transition">
                 Privacy Policy

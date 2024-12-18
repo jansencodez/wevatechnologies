@@ -89,7 +89,7 @@ export const BlogsProvider: React.FC<{ children: ReactNode }> = ({
     }
   };
 
-  // Function to delete a blog post
+  // Function to delete a blog post (from the server and then update local state)
   const deleteBlog = async (id: string) => {
     try {
       const response = await fetch(`${BASE_URL}/blogs/${id}`, {
@@ -100,6 +100,7 @@ export const BlogsProvider: React.FC<{ children: ReactNode }> = ({
         throw new Error("Failed to delete blog");
       }
 
+      // If the deletion is successful, update the local state
       setBlogPosts((prevPosts) => prevPosts.filter((post) => post.id !== id));
     } catch (err: unknown) {
       if (err instanceof Error) setError(err.message);

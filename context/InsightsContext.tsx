@@ -9,7 +9,7 @@ import {
 } from "react";
 
 // Types
-interface Insight {
+export interface Insight {
   id: string;
   insight_title: string;
   insight_content: string;
@@ -25,6 +25,7 @@ interface InsightsContextType {
   error: string | null;
   fetchInsights: () => Promise<void>;
   addInsight: (insightData: FormData) => Promise<void>;
+  deleteInsight: (id: string) => Promise<void>;
 }
 
 interface InsightsProviderProps {
@@ -87,6 +88,37 @@ export const InsightsProvider = ({ children }: InsightsProviderProps) => {
     }
   };
 
+  // Delete an insight by ID from both the server and local state
+  const deleteInsight = async (id: string) => {
+    setLoading(true);
+    setError(null);
+    try {
+      // Send DELETE request to the server
+      const response = await fetch(
+        `${process.env.NEXT_PUBLIC_API_URL}/insights/${id}`,
+        {
+          method: "DELETE",
+        }
+      );
+
+      if (!response.ok) {
+        throw new Error("Failed to delete insight");
+      }
+
+      // If deletion is successful, update the local state
+      setInsights((prevInsights) =>
+        prevInsights.filter((insight) => insight.id !== id)
+      );
+    } catch (err: unknown) {
+      if (err instanceof Error) {
+        setError("Error deleting the insight. Please try again later.");
+        console.log("Error deleting insight:", err);
+      }
+    } finally {
+      setLoading(false); // Always reset loading state
+    }
+  };
+
   return (
     <InsightsContext.Provider
       value={{
@@ -95,6 +127,7 @@ export const InsightsProvider = ({ children }: InsightsProviderProps) => {
         error,
         fetchInsights,
         addInsight,
+        deleteInsight,
       }}
     >
       {children}

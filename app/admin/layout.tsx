@@ -10,7 +10,8 @@ import {
   FaBars,
   FaServer,
   FaMailBulk,
-  FaPlusCircle, // Add an icon for the dropdown
+  FaPlusCircle,
+  FaBook,
 } from "react-icons/fa"; // Updated Icons
 import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
@@ -61,6 +62,12 @@ const data = [
   },
   {
     id: "8",
+    name: "posts",
+    link: "/admin/posts",
+    icon: <FaBook />,
+  },
+  {
+    id: "9",
     name: "Create",
     link: "/admin/create",
     icon: <FaPlusCircle />,
@@ -360,6 +367,18 @@ const Layout: FC<{ children: React.ReactNode }> = ({ children }) => {
                     className={`${isSidebarOpen ? "block" : "hidden"} md:block`}
                   >
                     Messages
+                  </span>
+                </p>
+              </Link>
+            </li>
+            <li className="mb-4">
+              <Link href="/admin/posts">
+                <p className="flex items-center gap-3 text-lg hover:bg-gray-200 p-2 rounded-md">
+                  <FaBook />
+                  <span
+                    className={`${isSidebarOpen ? "block" : "hidden"} md:block`}
+                  >
+                    Posts
                   </span>
                 </p>
               </Link>

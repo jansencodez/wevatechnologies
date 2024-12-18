@@ -9,7 +9,7 @@ import React, {
 } from "react";
 
 // Define the Announcement type
-interface Announcement {
+export interface Announcement {
   id: string;
   title: string;
   content: string;
@@ -70,7 +70,6 @@ export const AnnouncementsProvider = ({
     fetchAnnouncements();
   }, []);
 
-  console.log(announcements);
   // Add a new announcement
   const addAnnouncement = (announcement: Announcement) => {
     setAnnouncements((prev) => [...prev, announcement]);
@@ -90,11 +89,28 @@ export const AnnouncementsProvider = ({
     );
   };
 
-  // Delete an announcement
-  const deleteAnnouncement = (id: string) => {
-    setAnnouncements((prev) =>
-      prev.filter((announcement) => announcement.id !== id)
-    );
+  // Delete an announcement (from the server and then update local state)
+  const deleteAnnouncement = async (id: string) => {
+    try {
+      // Send a DELETE request to the server
+      const response = await fetch(
+        `${process.env.NEXT_PUBLIC_API_URL}/announcements/${id}`,
+        {
+          method: "DELETE",
+        }
+      );
+
+      if (!response.ok) {
+        throw new Error("Failed to delete the announcement from the server");
+      }
+
+      // If the deletion is successful, update the local state
+      setAnnouncements((prev) =>
+        prev.filter((announcement) => announcement.id !== id)
+      );
+    } catch (err) {
+      setError(err instanceof Error ? err.message : "Unknown error");
+    }
   };
 
   return (
