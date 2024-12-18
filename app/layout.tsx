@@ -10,6 +10,7 @@ import { ServicesProvider } from "@/context/servicesContext";
 import { EventsProvider } from "@/context/EventContext";
 import { InsightsProvider } from "@/context/InsightsContext";
 import { AnnouncementsProvider } from "@/context/AnnouncementsContext";
+import Head from "next/head";
 
 // Define the metadata with the correct types for SEO optimization
 export const metadata: Metadata = {
@@ -37,12 +38,20 @@ export const metadata: Metadata = {
   viewport: "width=device-width, initial-scale=1.0",
 };
 
+export function HeadComponent() {
+  return (
+    <Head>
+      <meta
+        name="google-site-verification"
+        content="NX1kZYUGK2EopVmXMixt1jGMnWTCVDMfnrRlCHL9bQQ"
+      />
+    </Head>
+  );
+}
+
 const RootLayout = ({ children }: { children: React.ReactNode }) => {
   return (
     <html lang="en">
-      <head>
-        {/* No need to manually add meta tags, metadata will be applied automatically */}
-      </head>
       <body>
         {/* Header */}
         <header className="bg-gradient-to-r from-gray-100 via-gray-200 to-gray-300 text-gray-900 shadow-md sticky top-0 z-50 border-b-2 border-gray-400">
