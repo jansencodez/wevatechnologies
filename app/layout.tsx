@@ -38,20 +38,15 @@ export const metadata: Metadata = {
   viewport: "width=device-width, initial-scale=1.0",
 };
 
-export function HeadComponent() {
-  return (
-    <Head>
-      <meta
-        name="google-site-verification"
-        content="NX1kZYUGK2EopVmXMixt1jGMnWTCVDMfnrRlCHL9bQQ"
-      />
-    </Head>
-  );
-}
-
 const RootLayout = ({ children }: { children: React.ReactNode }) => {
   return (
     <html lang="en">
+      <Head>
+        <meta
+          name="google-site-verification"
+          content="NX1kZYUGK2EopVmXMixt1jGMnWTCVDMfnrRlCHL9bQQ"
+        />
+      </Head>
       <body>
         {/* Header */}
         <header className="bg-gradient-to-r from-gray-100 via-gray-200 to-gray-300 text-gray-900 shadow-md sticky top-0 z-50 border-b-2 border-gray-400">
