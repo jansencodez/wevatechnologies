@@ -30,7 +30,7 @@ body {
 
 /* Add this to your global stylesheet or inside a styled-component */
 
-@keyframes bounce {
+/* @keyframes bounce_ {
   0%,
   20%,
   50%,
@@ -39,27 +39,51 @@ body {
     transform: translateY(0);
   }
   40% {
-    transform: translateY(-10px); /* Adjust the bounce height */
+    transform: translateY(-10px); 
   }
   60% {
-    transform: translateY(-5px); /* Adjust the bounce height */
+    transform: translateY(-5px);
   }
 }
+
 
 .bounce-animation {
   animation: bounce 1s ease infinite;
 }
-
+ */
 .loader {
   border-style: solid;
-  border-width: 4px;
+  border-width: 2px;
   border-radius: 50%;
   animation: spin 1s linear infinite;
 }
+
 @keyframes spin {
   to {
     transform: rotate(360deg);
   }
+}
+
+@keyframes bounce {
+  0%,
+  100% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(-10px);
+  }
+}
+
+.dot {
+  animation: bounce 0.6s infinite;
+}
+
+.dot.delay-200 {
+  animation-delay: 0.2s;
+}
+
+.dot.delay-400 {
+  animation-delay: 0.4s;
 }
 
 .hero {

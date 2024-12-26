@@ -10,6 +10,7 @@ import { ServicesProvider } from "@/context/servicesContext";
 import { EventsProvider } from "@/context/EventContext";
 import { InsightsProvider } from "@/context/InsightsContext";
 import { AnnouncementsProvider } from "@/context/AnnouncementsContext";
+import { ThemeProvider } from "@/context/ThemeContext";
 
 // Define the metadata with the correct types for SEO optimization
 export const metadata: Metadata = {
@@ -33,8 +34,12 @@ export const metadata: Metadata = {
       },
     ],
   },
-  robots: "index, follow", // Default robots setting for most pages
-  viewport: "width=device-width, initial-scale=1.0",
+  robots: "index, follow",
+};
+
+export const viewport = {
+  width: "device-width",
+  initialScale: 1,
 };
 
 const RootLayout = ({ children }: { children: React.ReactNode }) => {
@@ -74,7 +79,9 @@ const ContexedLayout = ({ children }: { children: React.ReactNode }) => {
         <EventsProvider>
           <InsightsProvider>
             <AnnouncementsProvider>
-              <RootLayout>{children}</RootLayout>
+              <ThemeProvider>
+                <RootLayout>{children}</RootLayout>
+              </ThemeProvider>
             </AnnouncementsProvider>
           </InsightsProvider>
         </EventsProvider>

@@ -34,7 +34,11 @@ const AnimatedLayout = ({
   const previousPageIndex = useRef<number | null>(null);
 
   useEffect(() => {
-    if (pathname.startsWith("/blogs") || pathname.startsWith("/admin")) {
+    if (
+      pathname.startsWith("/blogs") ||
+      pathname.startsWith("/admin") ||
+      pathname.startsWith("/profile")
+    ) {
       return; // Skip the animation if inside the blogs directory
     }
 

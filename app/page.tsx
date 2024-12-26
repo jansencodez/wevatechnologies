@@ -24,7 +24,7 @@ export default function Home() {
         </p>
         <hr className="h-1 bg-black mb-3" />
         <button
-          onClick={() => router.push("/onboarding")}
+          onClick={() => router.push("/signup")}
           className="bg-black text-white hover:bg-gray-700 px-6 py-3 rounded-full text-base font-medium transition w-48 self-center z-20"
         >
           Get Started

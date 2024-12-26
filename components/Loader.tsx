@@ -1,11 +1,27 @@
 import React from "react";
 
-function Loader() {
+interface LoaderProps {
+  size?: number;
+  color?: string;
+}
+
+const Loader: React.FC<LoaderProps> = ({ size = 4, color = "blue-400" }) => {
+  const dotSize = `w-${size} h-${size}`;
+  const dotColor = `bg-${color}`;
+
   return (
-    <div className="flex items-center justify-center">
-      <div className="loader w-12 h-12 border-4 border-blue-400 border-t-transparent rounded-full animate-spin"></div>
+    <div className="flex items-center justify-center space-x-2">
+      <div
+        className={`dot ${dotSize} ${dotColor} rounded-full animate-bounce`}
+      ></div>
+      <div
+        className={`dot ${dotSize} ${dotColor} rounded-full animate-bounce delay-200`}
+      ></div>
+      <div
+        className={`dot ${dotSize} ${dotColor} rounded-full animate-bounce delay-400`}
+      ></div>
     </div>
   );
-}
+};
 
 export default Loader;

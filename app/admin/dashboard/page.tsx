@@ -1,4 +1,8 @@
-import React from "react";
+"use client";
+
+import React, { useEffect, useState } from "react";
+import axios from "axios";
+
 import {
   FaUsers,
   FaProjectDiagram,
@@ -7,7 +11,41 @@ import {
 } from "react-icons/fa";
 import Link from "next/link";
 
-const page = () => {
+const DashboardPage = () => {
+  interface Activity {
+    activity: string;
+    timestamp: string;
+  }
+
+  const [stats, setStats] = useState<{
+    active_users: number;
+    current_projects: number;
+    server_uptime: string;
+    new_signups: number;
+    recent_activities: Activity[];
+  }>({
+    active_users: 0,
+    current_projects: 0,
+    server_uptime: "0%",
+    new_signups: 0,
+    recent_activities: [],
+  });
+
+  useEffect(() => {
+    const fetchStats = async () => {
+      try {
+        const response = await axios.get(
+          `${process.env.NEXT_PUBLIC_API_URL}/admin/dashboard-stats`
+        );
+        setStats(response.data);
+      } catch (error) {
+        console.error("Error fetching dashboard stats:", error);
+      }
+    };
+
+    fetchStats();
+  }, []);
+
   return (
     <div className="bg-gray-100 min-h-screen p-6">
       {/* Page Header */}
@@ -24,21 +62,29 @@ const page = () => {
       <section className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6 mb-6">
         <div className="bg-white p-6 rounded-lg shadow-md text-center">
           <h3 className="text-xl font-semibold text-gray-800">Active Users</h3>
-          <p className="text-3xl font-bold text-blue-600">1,234</p>
+          <p className="text-3xl font-bold text-blue-600">
+            {stats.active_users}
+          </p>
         </div>
         <div className="bg-white p-6 rounded-lg shadow-md text-center">
           <h3 className="text-xl font-semibold text-gray-800">
             Current Projects
           </h3>
-          <p className="text-3xl font-bold text-green-600">15</p>
+          <p className="text-3xl font-bold text-green-600">
+            {stats.current_projects}
+          </p>
         </div>
         <div className="bg-white p-6 rounded-lg shadow-md text-center">
           <h3 className="text-xl font-semibold text-gray-800">Server Uptime</h3>
-          <p className="text-3xl font-bold text-red-600">99.9%</p>
+          <p className="text-3xl font-bold text-red-600">
+            {stats.server_uptime}
+          </p>
         </div>
         <div className="bg-white p-6 rounded-lg shadow-md text-center">
           <h3 className="text-xl font-semibold text-gray-800">New Sign-ups</h3>
-          <p className="text-3xl font-bold text-yellow-600">50</p>
+          <p className="text-3xl font-bold text-yellow-600">
+            {stats.new_signups}
+          </p>
         </div>
       </section>
 
@@ -71,22 +117,14 @@ const page = () => {
         </h2>
         <div className="bg-white p-6 rounded-lg shadow-md">
           <ul className="space-y-4">
-            <li className="flex justify-between">
-              <span>New user registration</span>
-              <span className="text-gray-500">2 hours ago</span>
-            </li>
-            <li className="flex justify-between">
-              <span>New project launched: AI Research</span>
-              <span className="text-gray-500">5 hours ago</span>
-            </li>
-            <li className="flex justify-between">
-              <span>System update completed</span>
-              <span className="text-gray-500">1 day ago</span>
-            </li>
-            <li className="flex justify-between">
-              <span>New API request spike</span>
-              <span className="text-gray-500">3 days ago</span>
-            </li>
+            {stats.recent_activities.map((activity, index) => (
+              <li key={index} className="flex justify-between">
+                <span>{activity.activity}</span>
+                <span className="text-gray-500">
+                  {new Date(activity.timestamp).toLocaleString()}
+                </span>
+              </li>
+            ))}
           </ul>
         </div>
       </section>
@@ -94,4 +132,4 @@ const page = () => {
   );
 };
 
-export default page;
+export default DashboardPage;

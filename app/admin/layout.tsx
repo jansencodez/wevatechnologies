@@ -1,4 +1,5 @@
 "use client";
+
 import { FC, useState, useEffect, useRef } from "react";
 import {
   FaUsers,
@@ -16,6 +17,7 @@ import {
 import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
 import Loader from "@/components/Loader";
+import { useAuthStore } from "../store/auth";
 
 const data = [
   {
@@ -62,7 +64,7 @@ const data = [
   },
   {
     id: "8",
-    name: "posts",
+    name: "Posts",
     link: "/admin/posts",
     icon: <FaBook />,
   },
@@ -80,13 +82,6 @@ const data = [
   },
 ];
 
-type Admin = {
-  name: string;
-  email: string;
-  phone: string;
-  role: string;
-};
-
 const Layout: FC<{ children: React.ReactNode }> = ({ children }) => {
   const pathname = usePathname();
   const router = useRouter();
@@ -96,8 +91,8 @@ const Layout: FC<{ children: React.ReactNode }> = ({ children }) => {
   const [searchTerm, setSearchTerm] = useState("");
   const [filteredData, setFilteredData] = useState(data);
   const [debouncedTerm, setDebouncedTerm] = useState(searchTerm);
-  const [admin, setAdmin] = useState<null | Admin>(null);
   const [loading, setLoading] = useState<boolean>(false);
+  const { setAdmin, admin, clearAuth } = useAuthStore();
 
   useEffect(() => {
     const fetchAdminDetails = async () => {
@@ -130,9 +125,9 @@ const Layout: FC<{ children: React.ReactNode }> = ({ children }) => {
             {
               method: "POST",
               headers: {
+                Authorization: `Bearer ${refreshToken}`,
                 "Content-Type": "application/json",
               },
-              body: JSON.stringify({ refresh_token: refreshToken }),
             }
           );
 
@@ -163,7 +158,6 @@ const Layout: FC<{ children: React.ReactNode }> = ({ children }) => {
         }
 
         const adminData = await response.json();
-        console.log("Admin Data:", adminData);
 
         // Role-based access control
         if (adminData.role !== "admin" && adminData.role !== "superadmin") {
@@ -187,7 +181,7 @@ const Layout: FC<{ children: React.ReactNode }> = ({ children }) => {
     };
 
     fetchAdminDetails();
-  }, [router, pathname]);
+  }, [router, pathname, setAdmin]);
 
   useEffect(() => {
     const timer = setTimeout(() => {
@@ -220,6 +214,7 @@ const Layout: FC<{ children: React.ReactNode }> = ({ children }) => {
   const handleSignOut = () => {
     sessionStorage.removeItem("token");
     sessionStorage.removeItem("admin");
+    clearAuth();
     router.push("/admin");
   };
 
@@ -249,8 +244,69 @@ const Layout: FC<{ children: React.ReactNode }> = ({ children }) => {
     return "Good evening";
   };
 
+  // Notification logic
+  useEffect(() => {
+    const setupWebSocket = () => {
+      const socket = new WebSocket(
+        `${process.env.NEXT_PUBLIC_WS_URL}/notifications`
+      );
+
+      socket.onopen = () => {
+        console.log("WebSocket connection established");
+      };
+
+      socket.onmessage = (event) => {
+        console.log("WebSocket message received:", event.data);
+        const newMessage = JSON.parse(event.data);
+        showNotification("New Message", {
+          body: newMessage.message,
+          icon: "/images/logo.png",
+        });
+      };
+
+      socket.onclose = () => {
+        console.log("WebSocket connection closed");
+      };
+
+      socket.onerror = (error) => {
+        console.log("WebSocket error:", error);
+      };
+    };
+
+    setupWebSocket();
+    requestNotificationPermission();
+  }, []);
+
+  const requestNotificationPermission = () => {
+    if ("Notification" in window) {
+      Notification.requestPermission().then((permission) => {
+        if (permission === "granted") {
+          console.log("Notification permission granted.");
+        } else if (permission === "denied") {
+          console.log("Notification permission denied.");
+        } else {
+          console.log("Notification permission dismissed.");
+        }
+      });
+    } else {
+      console.log("This browser does not support notifications.");
+    }
+  };
+
+  const showNotification = (title: string, options: NotificationOptions) => {
+    if (Notification.permission === "granted") {
+      const notification = new Notification(title, options);
+      notification.onclick = () => {
+        window.focus();
+        notification.close();
+      };
+    } else {
+      console.log("Notification permission not granted.");
+    }
+  };
+
   if (loading) {
-    <Loader />;
+    return <Loader />;
   }
 
   if (pathname === "/admin") {
