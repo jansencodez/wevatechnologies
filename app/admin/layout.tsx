@@ -248,7 +248,7 @@ const Layout: FC<{ children: React.ReactNode }> = ({ children }) => {
   useEffect(() => {
     const setupWebSocket = () => {
       const socket = new WebSocket(
-        `${process.env.NEXT_SECRET_WS_URL}/notifications`
+        `${process.env.NEXT_PUBLIC_WS_URL}/notifications`
       );
 
       socket.onopen = () => {
