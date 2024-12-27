@@ -108,7 +108,7 @@ const UserManagement: React.FC = () => {
                     onClick={() => toggleUserStatus(user.id, user.is_active)}
                   >
                     {loadingUserId === user.id ? (
-                      <Loader color="white" key={user.id} />
+                      <Loader key={user.id} />
                     ) : user.is_active ? (
                       "Deactivate"
                     ) : (
