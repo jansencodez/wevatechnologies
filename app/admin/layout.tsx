@@ -1,6 +1,6 @@
 "use client";
 
-import { FC, useState, useEffect, useRef } from "react";
+import { FC, useState, useEffect, useRef, useCallback } from "react";
 import {
   FaUsers,
   FaProjectDiagram,
@@ -82,6 +82,10 @@ const data = [
   },
 ];
 
+interface Count {
+  unread_count: number;
+}
+
 const Layout: FC<{ children: React.ReactNode }> = ({ children }) => {
   const pathname = usePathname();
   const router = useRouter();
@@ -93,8 +97,17 @@ const Layout: FC<{ children: React.ReactNode }> = ({ children }) => {
   const [debouncedTerm, setDebouncedTerm] = useState(searchTerm);
   const [loading, setLoading] = useState<boolean>(false);
   const { setAdmin, admin, clearAuth } = useAuthStore();
+  const [messagesCount, setMessagesCount] = useState<number>(0);
 
   useEffect(() => {
+    const fetchMessages = async () => {
+      const res = await fetch(
+        `${process.env.NEXT_PUBLIC_API_URL}/contact/unread_count`
+      );
+      const data: Count = await res.json();
+      setMessagesCount(data.unread_count);
+    };
+
     const fetchAdminDetails = async () => {
       const token = sessionStorage.getItem("token");
       const refreshToken = sessionStorage.getItem("refresh_token");
@@ -180,6 +193,7 @@ const Layout: FC<{ children: React.ReactNode }> = ({ children }) => {
       }
     };
 
+    fetchMessages();
     fetchAdminDetails();
   }, [router, pathname, setAdmin]);
 
@@ -245,47 +259,47 @@ const Layout: FC<{ children: React.ReactNode }> = ({ children }) => {
   };
 
   // Notification logic
-  useEffect(() => {
-    const setupWebSocket = () => {
-      const socket = new WebSocket(
-        `${process.env.NEXT_PUBLIC_WS_URL}/notifications`
-      );
 
-      socket.onopen = () => {
-        console.log("WebSocket connection established");
-      };
+  const setupWebSocket = useCallback(() => {
+    const socket = new WebSocket(
+      `${process.env.NEXT_PUBLIC_WS_URL}/notifications`
+    );
 
-      socket.onmessage = (event) => {
-        console.log("WebSocket message received:", event.data);
-        const newMessage = JSON.parse(event.data);
-        showNotification("New Message", {
-          body: newMessage.message,
-          icon: "/images/logo.png",
-        });
-      };
-
-      socket.onclose = () => {
-        console.log("WebSocket connection closed");
-      };
-
-      socket.onerror = (error) => {
-        console.log("WebSocket error:", error);
-      };
+    socket.onopen = () => {
+      console.log("WebSocket connection established");
     };
 
-    setupWebSocket();
-    requestNotificationPermission();
+    socket.onmessage = (event) => {
+      console.log("WebSocket message received:", event.data);
+      const newMessage = JSON.parse(event.data);
+      showNotification("New Message", {
+        body: newMessage.message,
+      });
+    };
+
+    socket.onclose = () => {
+      console.log("WebSocket connection closed");
+    };
+
+    socket.onerror = (error) => {
+      console.log("WebSocket error:", error);
+    };
   }, []);
+
+  useEffect(() => {
+    if (pathname == "/admin/dashboard") {
+      setupWebSocket();
+      requestNotificationPermission();
+    }
+  }, [setupWebSocket, pathname]);
 
   const requestNotificationPermission = () => {
     if ("Notification" in window) {
       Notification.requestPermission().then((permission) => {
         if (permission === "granted") {
           console.log("Notification permission granted.");
-        } else if (permission === "denied") {
-          console.log("Notification permission denied.");
         } else {
-          console.log("Notification permission dismissed.");
+          console.log("Notification permission denied.");
         }
       });
     } else {
@@ -294,14 +308,49 @@ const Layout: FC<{ children: React.ReactNode }> = ({ children }) => {
   };
 
   const showNotification = (title: string, options: NotificationOptions) => {
-    if (Notification.permission === "granted") {
-      const notification = new Notification(title, options);
-      notification.onclick = () => {
-        window.focus();
-        notification.close();
-      };
-    } else {
-      console.log("Notification permission not granted.");
+    try {
+      if (!("Notification" in window)) {
+        console.log("This browser does not support notifications");
+        return;
+      }
+
+      if (Notification.permission === "granted") {
+        const notification = new Notification(title, {
+          ...options,
+          icon: "/images/logo.png", // Add your logo as notification icon
+          badge: "/images/logo.png",
+          requireInteraction: true, // Keep notification until user interacts
+          silent: false, // Enable sound
+        });
+
+        notification.onclick = () => {
+          window.focus();
+          notification.close();
+        };
+
+        console.log("Notification shown:", title, options);
+      } else if (Notification.permission !== "denied") {
+        Notification.requestPermission().then((permission) => {
+          if (permission === "granted") {
+            const notification = new Notification(title, options);
+            notification.onclick = () => {
+              window.focus();
+              notification.close();
+            };
+            console.log(
+              "Notification shown after permission granted:",
+              title,
+              options
+            );
+          } else {
+            console.log("Notification permission denied");
+          }
+        });
+      } else {
+        console.log("Notification permission denied");
+      }
+    } catch (error) {
+      console.error("Error showing notification:", error);
     }
   };
 
@@ -415,15 +464,20 @@ const Layout: FC<{ children: React.ReactNode }> = ({ children }) => {
                 </p>
               </Link>
             </li>
-            <li className="mb-4">
+            <li className="mb-4 ">
               <Link href="/admin/messages">
-                <p className="flex items-center gap-3 text-lg hover:bg-gray-200 p-2 rounded-md">
+                <p className="flex items-center gap-3 text-lg hover:bg-gray-200 p-2 rounded-md relative">
                   <FaMailBulk />
                   <span
                     className={`${isSidebarOpen ? "block" : "hidden"} md:block`}
                   >
                     Messages
                   </span>
+                  {messagesCount > 0 && (
+                    <span className="absolute text-white bg-red-500 rounded-full w-6 h-6 flex items-center justify-center -top-[6px] -left-[6px] text-xs align-middle">
+                      {messagesCount > 10 ? "10+" : messagesCount}
+                    </span>
+                  )}
                 </p>
               </Link>
             </li>
