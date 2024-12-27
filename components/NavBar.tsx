@@ -3,10 +3,12 @@
 import Image from "next/image";
 import Link from "next/link";
 import React, { useState } from "react";
-import { FaBars } from "react-icons/fa";
+import { FaBars, FaTimes } from "react-icons/fa";
+import { useAuthStore } from "@/store/auth";
 
 const NavBar = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
+  const { user, clearAuth } = useAuthStore();
 
   const toggleMenu = () => setIsMenuOpen(!isMenuOpen);
   const closeMenu = () => setIsMenuOpen(false);
@@ -76,6 +78,56 @@ const NavBar = () => {
                 <span className="absolute left-0 bottom-0 w-0 h-[2px] bg-white transition-all duration-300 group-hover:w-full"></span>
               </Link>
             </li>
+            {user && (
+              <li>
+                <Link
+                  href="/profile"
+                  className="group relative inline-block hover:text-gray-600 transition"
+                  onClick={closeMenu}
+                >
+                  <span className="relative z-10">Profile</span>
+                  <span className="absolute left-0 bottom-0 w-0 h-[2px] bg-white transition-all duration-300 group-hover:w-full"></span>
+                </Link>
+              </li>
+            )}
+            {user && (
+              <li>
+                <button
+                  className="group relative inline-block hover:text-gray-600 transition"
+                  onClick={() => {
+                    clearAuth();
+                    closeMenu();
+                  }}
+                >
+                  <span className="relative z-10">Logout</span>
+                  <span className="absolute left-0 bottom-0 w-0 h-[2px] bg-white transition-all duration-300 group-hover:w-full"></span>
+                </button>
+              </li>
+            )}
+            {!user && (
+              <li>
+                <Link
+                  href="/login"
+                  className="group relative inline-block hover:text-gray-600 transition"
+                  onClick={closeMenu}
+                >
+                  <span className="relative z-10">Login</span>
+                  <span className="absolute left-0 bottom-0 w-0 h-[2px] bg-white transition-all duration-300 group-hover:w-full"></span>
+                </Link>
+              </li>
+            )}
+            {!user && (
+              <li>
+                <Link
+                  href="/signup"
+                  className="group relative inline-block hover:text-gray-600 transition"
+                  onClick={closeMenu}
+                >
+                  <span className="relative z-10">Signup</span>
+                  <span className="absolute left-0 bottom-0 w-0 h-[2px] bg-white transition-all duration-300 group-hover:w-full"></span>
+                </Link>
+              </li>
+            )}
             <li>
               <Link
                 href="/contact-us"
@@ -89,55 +141,112 @@ const NavBar = () => {
         </nav>
       </div>
 
-      {/* Mobile Dropdown Menu */}
-      {isMenuOpen && (
-        <>
-          <div
+      {/* Mobile Slide-in Menu */}
+      <div
+        className={`fixed top-0 left-0 w-full h-full bg-black bg-opacity-50 z-40 transition-transform transform ${
+          isMenuOpen ? "translate-x-0" : "-translate-x-full"
+        }`}
+        onClick={closeMenu}
+      ></div>
+      <nav
+        className={`fixed top-0 left-0 w-64 h-full bg-gray-300 shadow-lg z-50 transition-transform transform ${
+          isMenuOpen ? "translate-x-0" : "-translate-x-full"
+        }`}
+      >
+        <div className="flex justify-between items-center p-4">
+          <span className="text-xl font-bold">Menu</span>
+          <button
             onClick={closeMenu}
-            className="fixed top-0 left-0 w-full h-full bg-black opacity-50 z-40"
-          ></div>
-          <nav className="lg:hidden absolute top-16 left-0 w-full bg-gray-300 shadow-lg z-50">
-            <ul className="flex flex-col items-center py-4 space-y-4">
-              <li>
-                <Link
-                  href="/"
-                  className="group relative inline-block hover:text-gray-600 transition"
-                  onClick={closeMenu}
-                >
-                  <span className="relative z-10">Home</span>
-                </Link>
-              </li>
-              <li>
-                <Link
-                  href="/services"
-                  className="group relative inline-block hover:text-gray-600 transition"
-                  onClick={closeMenu}
-                >
-                  <span className="relative z-10">Services</span>
-                </Link>
-              </li>
-              <li>
-                <Link
-                  href="/blogs"
-                  className="group relative inline-block hover:text-gray-600 transition"
-                  onClick={closeMenu}
-                >
-                  <span className="relative z-10">Blogs</span>
-                </Link>
-              </li>
-              <li>
-                <Link
-                  href="/contact-us"
-                  className="group relative inline-block hover:text-gray-600 transition"
-                  onClick={closeMenu}
-                >
-                  <span className="relative z-10">Contact</span>
-                </Link>
-              </li>
-            </ul>
-          </nav>
-        </>
-      )}
+            className="text-gray-900 focus:outline-none"
+          >
+            <FaTimes size={24} />
+          </button>
+        </div>
+        <ul className="flex flex-col items-start p-4 space-y-4">
+          <li>
+            <Link
+              href="/"
+              className="group relative inline-block hover:text-gray-600 transition"
+              onClick={closeMenu}
+            >
+              <span className="relative z-10">Home</span>
+            </Link>
+          </li>
+          <li>
+            <Link
+              href="/services"
+              className="group relative inline-block hover:text-gray-600 transition"
+              onClick={closeMenu}
+            >
+              <span className="relative z-10">Services</span>
+            </Link>
+          </li>
+          <li>
+            <Link
+              href="/blogs"
+              className="group relative inline-block hover:text-gray-600 transition"
+              onClick={closeMenu}
+            >
+              <span className="relative z-10">Blogs</span>
+            </Link>
+          </li>
+          {user && (
+            <li>
+              <Link
+                href="/profile"
+                className="group relative inline-block hover:text-gray-600 transition"
+                onClick={closeMenu}
+              >
+                <span className="relative z-10">Profile</span>
+              </Link>
+            </li>
+          )}
+          {user && (
+            <li>
+              <button
+                className="group relative inline-block hover:text-gray-600 transition"
+                onClick={() => {
+                  clearAuth();
+                  closeMenu();
+                }}
+              >
+                <span className="relative z-10">Logout</span>
+              </button>
+            </li>
+          )}
+          {!user && (
+            <li>
+              <Link
+                href="/login"
+                className="group relative inline-block hover:text-gray-600 transition"
+                onClick={closeMenu}
+              >
+                <span className="relative z-10">Login</span>
+              </Link>
+            </li>
+          )}
+          {!user && (
+            <li>
+              <Link
+                href="/signup"
+                className="group relative inline-block hover:text-gray-600 transition"
+                onClick={closeMenu}
+              >
+                <span className="relative z-10">Signup</span>
+              </Link>
+            </li>
+          )}
+          <li>
+            <Link
+              href="/contact-us"
+              className="group relative inline-block hover:text-gray-600 transition"
+              onClick={closeMenu}
+            >
+              <span className="relative z-10">Contact</span>
+            </Link>
+          </li>
+        </ul>
+      </nav>
     </>
   );
 };

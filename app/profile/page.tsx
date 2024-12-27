@@ -1,7 +1,7 @@
 "use client";
 
 import React, { useEffect, useState } from "react";
-import { useAuthStore } from "../store/auth";
+import { useAuthStore } from "@/store/auth";
 import { useRouter } from "next/navigation";
 import Image from "next/image";
 import dynamic from "next/dynamic";
@@ -95,31 +95,31 @@ export default function Dashboard() {
     return <p className="text-center text-red-500 mt-4">Error: {error}</p>;
 
   return (
-    <div className="container mx-auto p-2">
-      <div className="bg-white shadow-md rounded-lg p-6">
-        <div className="flex items-center space-x-6">
+    <div className="container mx-auto p-4 sm:p-6 lg:p-8">
+      <div className="bg-white shadow-md rounded-lg p-6 sm:p-8 lg:p-10">
+        <div className="flex flex-col sm:flex-row items-center space-y-4 sm:space-y-0 sm:space-x-6">
           {user.profile_picture ? (
             <Image
               src={user.profile_picture}
               alt="Profile"
-              className="w-24 h-24 rounded-full border border-gray-200"
-              width={96}
-              height={96}
+              className="w-24 h-24 sm:w-32 sm:h-32 rounded-full border border-gray-200"
+              width={128}
+              height={128}
             />
           ) : (
-            <div className="w-24 h-24 rounded-full border border-gray-200 flex items-center justify-center bg-gray-300 text-white text-2xl font-bold">
+            <div className="w-24 h-24 sm:w-32 sm:h-32 rounded-full border border-gray-200 flex items-center justify-center bg-gray-300 text-white text-2xl font-bold">
               {user.name.charAt(0).toUpperCase()}
             </div>
           )}
-          <div>
-            <h1 className="text-2xl font-semibold text-gray-800">
+          <div className="text-center sm:text-left">
+            <h1 className="text-2xl sm:text-3xl font-semibold text-gray-800">
               Welcome, {user.name}
             </h1>
             <p className="text-gray-600">{user.email}</p>
           </div>
         </div>
 
-        <div className="mt-6">
+        <div className="mt-6 space-y-4">
           <p className="text-gray-700">
             <strong>Phone:</strong> {user.phone || "Not provided"}
           </p>
@@ -128,7 +128,7 @@ export default function Dashboard() {
           </p>
         </div>
 
-        <div className="mt-6 flex space-x-4">
+        <div className="mt-6 flex flex-col sm:flex-row space-y-4 sm:space-y-0 sm:space-x-4">
           <button
             className="px-5 py-2 bg-blue-600 text-white font-medium rounded hover:bg-blue-700"
             onClick={() => router.push("/profile/edit")}

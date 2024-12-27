@@ -74,7 +74,7 @@ export default function ProfileLayout({
     <div className="min-h-screen flex bg-gray-100">
       {/* Sidebar */}
       <aside
-        className={`fixed lg:relative z-20 bg-gradient-to-b from-gray-100 to-gray-200 p-6 transition-transform duration-300 ease-in-out ${
+        className={`fixed lg:relative z-20 bg-gradient-to-b from-gray-100 to-gray-200 p-6 transition-transform duration-300 ease-in-out top-0 bottom-0 ${
           sidebarOpen ? "translate-x-0" : "-translate-x-full"
         } lg:translate-x-0 lg:w-64 shadow-lg border-r border-gray-300`}
       >

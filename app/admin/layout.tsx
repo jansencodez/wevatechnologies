@@ -17,7 +17,7 @@ import {
 import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
 import Loader from "@/components/Loader";
-import { useAuthStore } from "../store/auth";
+import { useAuthStore } from "@/store/auth";
 
 const data = [
   {

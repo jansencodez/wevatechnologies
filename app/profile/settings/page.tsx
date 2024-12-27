@@ -4,7 +4,7 @@ import React, { useState } from "react";
 import { useTheme } from "@/context/ThemeContext"; // Assuming you're using context to manage theme
 import { useRouter } from "next/navigation";
 import { IoIosArrowDown, IoIosArrowUp } from "react-icons/io";
-import { useAuthStore } from "../../store/auth"; // Assuming you're using store to manage authentication
+import { useAuthStore } from "@/store/auth"; // Assuming you're using store to manage authentication
 
 const SettingsScreen = () => {
   const { theme, toggleTheme } = useTheme(); // Assuming theme is managed in context
@@ -52,7 +52,7 @@ const SettingsScreen = () => {
   };
 
   return (
-    <div className="container mx-auto p-6">
+    <div className="container mx-auto">
       <div className="bg-white shadow-md rounded-lg p-6">
         <h1 className="text-2xl font-semibold text-gray-800 mb-4">Settings</h1>
 

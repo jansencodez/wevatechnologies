@@ -4,7 +4,7 @@ import { useState, FormEvent } from "react";
 import { useRouter } from "next/navigation";
 import Image from "next/image";
 import logo from "@/public/images/logo.png";
-import { useAuthStore } from "../store/auth";
+import { useAuthStore } from "@/store/auth";
 import Loader from "@/components/Loader";
 
 type AuthState = {

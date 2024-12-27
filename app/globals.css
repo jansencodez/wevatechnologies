@@ -28,36 +28,6 @@ body {
   opacity: 1; /* Ensure content starts with opacity 1 */
 }
 
-/* Add this to your global stylesheet or inside a styled-component */
-
-/* @keyframes bounce_ {
-  0%,
-  20%,
-  50%,
-  80%,
-  100% {
-    transform: translateY(0);
-  }
-  40% {
-    transform: translateY(-10px); 
-  }
-  60% {
-    transform: translateY(-5px);
-  }
-}
-
-
-.bounce-animation {
-  animation: bounce 1s ease infinite;
-}
- */
-.loader {
-  border-style: solid;
-  border-width: 2px;
-  border-radius: 50%;
-  animation: spin 1s linear infinite;
-}
-
 @keyframes spin {
   to {
     transform: rotate(360deg);
@@ -65,8 +35,7 @@ body {
 }
 
 @keyframes bounce {
-  0%,
-  100% {
+  0%, 100% {
     transform: translateY(0);
   }
   50% {
@@ -74,15 +43,15 @@ body {
   }
 }
 
-.loader-dot {
+.dot-loader {
   animation: bounce 0.6s infinite;
 }
 
-.loader-dot.delay-200 {
+.dot-loader.delay-200 {
   animation-delay: 0.2s;
 }
 
-.loader-dot.delay-400 {
+.dot-loader.delay-400 {
   animation-delay: 0.4s;
 }
 

@@ -1,7 +1,7 @@
 "use client";
 
 import React, { useState } from "react";
-import { useAuthStore } from "../../store/auth";
+import { useAuthStore } from "@/store/auth";
 import { useRouter } from "next/navigation";
 import Image from "next/image";
 import Loader from "@/components/Loader";
@@ -85,14 +85,14 @@ export default function EditProfile() {
   };
 
   return (
-    <div className="container mx-auto p-6">
-      <div className="bg-white shadow-md rounded-lg p-6">
+    <div className="mx-auto">
+      <div className="bg-white shadow-md rounded-lg p-2 lg:p-10">
         <h1 className="text-2xl font-semibold text-gray-800 mb-4">
           Edit Profile
         </h1>
         {error && <p className="text-red-500 mb-4">{error}</p>}
         <form onSubmit={handleSubmit} className="space-y-4">
-          <div className="flex items-center space-x-6">
+          <div className="flex flex-col sm:flex-row items-center space-y-4 sm:space-y-0 sm:space-x-6">
             <div>
               <Image
                 src={
@@ -103,9 +103,9 @@ export default function EditProfile() {
                     : "/default-profile.png"
                 }
                 alt="Profile"
-                className="w-24 h-24 rounded-full border border-gray-200"
-                width={96}
-                height={96}
+                className="w-24 h-24 sm:w-32 sm:h-32 rounded-full border border-gray-200"
+                width={128}
+                height={128}
               />
             </div>
             <div>
@@ -193,7 +193,7 @@ export default function EditProfile() {
             />
           </div>
 
-          <div className="flex space-x-4">
+          <div className="flex flex-col sm:flex-row space-y-4 sm:space-y-0 sm:space-x-4">
             <button
               type="submit"
               className={`px-6 py-2 text-white font-medium rounded ${
