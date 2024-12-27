@@ -12,13 +12,13 @@ const Loader: React.FC<LoaderProps> = ({ size = 4, color = "blue-400" }) => {
   return (
     <div className="flex items-center justify-center space-x-2">
       <div
-        className={`dot ${dotSize} ${dotColor} rounded-full animate-bounce`}
+        className={`loader-dot ${dotSize} ${dotColor} rounded-full animate-bounce`}
       ></div>
       <div
-        className={`dot ${dotSize} ${dotColor} rounded-full animate-bounce delay-200`}
+        className={`loader-dot ${dotSize} ${dotColor} rounded-full animate-bounce delay-200`}
       ></div>
       <div
-        className={`dot ${dotSize} ${dotColor} rounded-full animate-bounce delay-400`}
+        className={`loader-dot ${dotSize} ${dotColor} rounded-full animate-bounce delay-400`}
       ></div>
     </div>
   );
