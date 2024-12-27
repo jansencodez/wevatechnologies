@@ -12,6 +12,7 @@ interface Message {
   email: string;
   message: string;
   category: string;
+  read:boolean;
 }
 
 export default function MessagesPage() {

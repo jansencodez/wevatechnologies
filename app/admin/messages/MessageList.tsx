@@ -7,6 +7,7 @@ type Message = {
   email: string;
   message: string;
   category: string;
+  read: boolean;
 };
 
 interface MessageListProps {
