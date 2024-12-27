@@ -43,6 +43,8 @@ export default function LoginPage() {
 
       const data = await response.json();
 
+      console.log(data);
+
       setTokens({ access: data.access_token, refresh: data.refresh_token });
       setLoading(false);
 

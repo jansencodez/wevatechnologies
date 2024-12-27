@@ -5,6 +5,11 @@ import { useRouter } from "next/navigation";
 import axios from "axios";
 import Loader from "@/components/Loader";
 import Link from "next/link";
+import { useAuthStore } from "@/store/auth";
+
+type AuthState = {
+  setTokens: (tokens: { access: string; refresh: string }) => void;
+};
 
 const SignUpScreen = () => {
   const router = useRouter();
@@ -17,6 +22,7 @@ const SignUpScreen = () => {
   const [bio, setBio] = useState("");
   const [profilePicture, setProfilePicture] = useState<File | null>(null);
   const [error, setError] = useState<string | null>(null);
+  const setTokens = useAuthStore((state: AuthState) => state.setTokens);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -47,11 +53,10 @@ const SignUpScreen = () => {
 
       // Assuming the response contains user data and token
       const { access_token, refresh_token } = response.data;
-      // Store tokens and redirect to the home page or login
-      localStorage.setItem("access_token", access_token);
-      localStorage.setItem("refresh_token", refresh_token);
 
-      router.push("/home"); // Redirect to homepage or dashboard
+      setTokens({ access: access_token, refresh: refresh_token });
+
+      router.push("/profile"); // Redirect to homepage or dashboard
     } catch (err: unknown) {
       if (err instanceof Error)
         setError(err.message || "Error registering user.");
