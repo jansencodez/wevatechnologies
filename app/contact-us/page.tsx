@@ -88,7 +88,7 @@ const Contact: React.FC = () => {
                 <div className="flex items-center space-x-4">
                   <FaEnvelope className="text-indigo-500 text-xl" />
                   <span className="text-gray-700">
-                    contact@wevatechnologies.com
+                    wevatechnologies@gmail.com
                   </span>
                 </div>
               </div>
