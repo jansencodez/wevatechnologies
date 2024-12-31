@@ -10,6 +10,7 @@ import {
   FaCog,
 } from "react-icons/fa";
 import Link from "next/link";
+import { useRouter } from "next/navigation";
 
 const DashboardPage = () => {
   interface Activity {
@@ -30,6 +31,8 @@ const DashboardPage = () => {
     new_signups: 0,
     recent_activities: [],
   });
+
+  const router = useRouter();
 
   useEffect(() => {
     const fetchStats = async () => {
@@ -53,7 +56,10 @@ const DashboardPage = () => {
         <h1 className="font-semibold text-gray-800 text-xl md:hidden">
           Admin Dashboard
         </h1>
-        <button className="p-2 bg-gray-200 rounded-full hover:bg-gray-300">
+        <button
+          className="p-2 bg-gray-200 rounded-full hover:bg-gray-300"
+          onClick={() => router.push("/admin/settings")}
+        >
           <FaCog className="text-xl" />
         </button>
       </header>

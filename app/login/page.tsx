@@ -35,17 +35,17 @@ export default function LoginPage() {
             email,
             password,
           }),
+          credentials: "include",
         }
       );
+
       if (!response.ok) {
         throw new Error("Invalid email or password");
       }
 
       const data = await response.json();
 
-      console.log(data);
-
-      setTokens({ access: data.access_token, refresh: data.refresh_token });
+      setTokens({ access: data.access_token, refresh: "in-cookie" });
       setLoading(false);
 
       router.push("/profile");
@@ -56,7 +56,6 @@ export default function LoginPage() {
     }
   };
 
-  // Parse the response data as JSON
   return (
     <div className="flex items-center justify-center min-h-screen bg-gray-100">
       <div className="w-full max-w-md p-8 space-y-4 bg-white shadow-md rounded">

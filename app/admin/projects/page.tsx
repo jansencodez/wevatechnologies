@@ -19,6 +19,7 @@ import {
   Tooltip,
   Legend,
 } from "chart.js";
+import ResponsiveChartWrapper from "../components/ResponsiveChartWrapper";
 
 ChartJS.register(
   CategoryScale,
@@ -112,9 +113,9 @@ const Projects: React.FC = () => {
           </button>
         </div>
         {isClient && ( // Only render the chart on the client
-          <div>
+          <ResponsiveChartWrapper>
             <Bar data={chartData} options={chartOptions} />
-          </div>
+          </ResponsiveChartWrapper>
         )}
         <table className="w-full table-auto mt-4">
           <thead>

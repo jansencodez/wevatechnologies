@@ -1,5 +1,5 @@
-// store/auth.js
 import { create } from "zustand";
+import { persist } from "zustand/middleware";
 
 export interface User {
   id: string;
@@ -33,12 +33,22 @@ interface AuthState {
   clearAuth: () => void;
 }
 
-export const useAuthStore = create<AuthState>((set) => ({
-  user: null,
-  tokens: null,
-  admin: null,
-  setAdmin: (admin: Admin) => set({ admin }),
-  setUser: (user: User) => set({ user }),
-  setTokens: (tokens: Tokens) => set({ tokens }),
-  clearAuth: () => set({ user: null, tokens: null }),
-}));
+export const useAuthStore = create<AuthState>()(
+  persist(
+    (set) => ({
+      user: null,
+      tokens: null,
+      admin: null,
+      setUser: (user: User) => set({ user }),
+      setTokens: (tokens: Tokens) => set({ tokens }),
+      setAdmin: (admin: Admin) => set({ admin }),
+      clearAuth: () => set({ user: null, tokens: null, admin: null }),
+    }),
+    {
+      name: "auth-storage",
+      partialize: (state) => ({
+        tokens: state.tokens,
+      }),
+    }
+  )
+);

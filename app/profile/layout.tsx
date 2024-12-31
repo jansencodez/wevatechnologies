@@ -8,9 +8,13 @@ import {
   FaCog,
   FaBars,
   FaTimes,
+  FaSignOutAlt,
 } from "react-icons/fa";
 import { gsap } from "gsap";
 import { usePathname } from "next/navigation";
+import axios from "axios";
+import { useAuthStore } from "@/store/auth";
+import { useRouter } from "next/navigation";
 
 // Create a mapping of pathnames to indices
 const pageIndexMap: Record<string, number> = {
@@ -28,12 +32,34 @@ export default function ProfileLayout({
   const mainContentRef = useRef<HTMLDivElement>(null);
   const pathname = usePathname();
   const previousPageIndex = useRef<number | null>(null);
+  const { clearAuth } = useAuthStore();
+  const router = useRouter();
 
   // Determine the index of the current page
-  const pageIndex = pageIndexMap[pathname] ?? 0; // Default to 0 if page not found
+  const pageIndex = pageIndexMap[pathname] ?? 0;
 
   const toggleSidebar = () => {
     setSidebarOpen((prev) => !prev);
+  };
+
+  const handleLogout = async () => {
+    try {
+      // Send a logout request to the server
+      await axios.post(
+        `${process.env.NEXT_PUBLIC_API_URL}/users/logout`,
+        {},
+        {
+          withCredentials: true,
+        }
+      );
+
+      clearAuth();
+
+      router.push("/login");
+    } catch (error) {
+      console.error("Logout failed:", error);
+      // Handle the error (you could notify the user, etc.)
+    }
   };
 
   useEffect(() => {
@@ -109,6 +135,15 @@ export default function ProfileLayout({
                   <span>Settings</span>
                 </span>
               </Link>
+            </li>
+            <li>
+              <button
+                onClick={handleLogout}
+                className="flex items-center space-x-3 text-gray-700 hover:text-blue-600 hover:bg-gray-200 p-2 rounded-lg transition-all duration-200 ease-in-out"
+              >
+                <FaSignOutAlt />
+                <span>Logout</span>
+              </button>
             </li>
           </ul>
         </nav>

@@ -5,16 +5,40 @@ import { useAuthStore } from "@/store/auth";
 import { useRouter } from "next/navigation";
 import Image from "next/image";
 import dynamic from "next/dynamic";
+import Loader from "@/components/Loader";
 
 const ContentLoader = dynamic(() => import("react-content-loader"), {
   ssr: false,
 });
 
 export default function Dashboard() {
-  const { tokens, user, setUser, clearAuth } = useAuthStore();
+  const { user, setUser, clearAuth, setTokens } = useAuthStore();
+  const { tokens } = useAuthStore.getState();
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const router = useRouter();
+
+  const refreshAccessToken = React.useCallback(async () => {
+    try {
+      const response = await fetch(
+        `${process.env.NEXT_PUBLIC_API_URL}/users/refresh`,
+        {
+          method: "POST",
+          credentials: "include", // This ensures cookies are sent
+        }
+      );
+
+      if (!response.ok) {
+        throw new Error("Failed to refresh token");
+      }
+
+      const data = await response.json();
+      setTokens({ access: data.access_token, refresh: "in-cookie" });
+    } catch (error) {
+      console.error("Error refreshing access token:", error);
+      // Handle logout or other actions
+    }
+  }, [setTokens]);
 
   const fetchUserProfile = React.useCallback(async () => {
     setLoading(true);
@@ -29,7 +53,9 @@ export default function Dashboard() {
           },
         }
       );
-      if (!response.ok) throw new Error("Failed to fetch user profile");
+      if (!response.ok && response.status == 401 && tokens?.access) {
+        await refreshAccessToken();
+      }
       const data = await response.json();
       setUser(data);
     } catch (err: unknown) {
@@ -37,15 +63,11 @@ export default function Dashboard() {
     } finally {
       setLoading(false);
     }
-  }, [tokens, setUser]);
+  }, [tokens, setUser, refreshAccessToken]);
 
   useEffect(() => {
-    if (!tokens?.access) {
-      router.push("/login"); // Redirect if not logged in
-    } else {
-      fetchUserProfile();
-    }
-  }, [tokens, router, fetchUserProfile]);
+    fetchUserProfile();
+  }, [fetchUserProfile]);
 
   const handleDeleteAccount = async () => {
     if (!user || !tokens) return;
@@ -94,6 +116,8 @@ export default function Dashboard() {
   if (error)
     return <p className="text-center text-red-500 mt-4">Error: {error}</p>;
 
+  if (!user) return <Loader />;
+
   return (
     <div className="container mx-auto p-4 sm:p-6 lg:p-8">
       <div className="bg-white shadow-md rounded-lg p-6 sm:p-8 lg:p-10">
@@ -108,7 +132,7 @@ export default function Dashboard() {
             />
           ) : (
             <div className="w-24 h-24 sm:w-32 sm:h-32 rounded-full border border-gray-200 flex items-center justify-center bg-gray-300 text-white text-2xl font-bold">
-              {user.name.charAt(0).toUpperCase()}
+              {user?.name?.charAt(0).toUpperCase()}
             </div>
           )}
           <div className="text-center sm:text-left">
